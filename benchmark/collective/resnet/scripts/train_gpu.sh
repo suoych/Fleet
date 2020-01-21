@@ -17,13 +17,13 @@ MODEL=ResNet50 #VGG16
 MODEL_SAVE_PATH="output/"
 
 # training params
-NUM_EPOCHS=90
+NUM_EPOCHS=1
 BATCH_SIZE=128
 LR=0.1
 LR_STRATEGY=piecewise_decay
 
 # data params
-DATA_PATH="./ImageNet"
+DATA_PATH="/ssd2/lilong/ImageNet"
 TOTAL_IMAGES=1281167
 CLASS_DIM=1000
 IMAGE_SHAPE=3,224,224
@@ -34,9 +34,9 @@ FUSE=True
 NCCL_COMM_NUM=1
 NUM_THREADS=2
 USE_HIERARCHICAL_ALLREDUCE=False
-NUM_CARDS=8
-FP16=True #whether to use float16
-use_dali=True
+NUM_CARDS=3
+FP16=False #whether to use float16
+use_dali=False
 if [[ ${use_dali} == "True" ]]; then
     export FLAGS_fraction_of_gpu_memory_to_use=0.8
 fi
@@ -60,7 +60,7 @@ fi
 
 set -x
 
-python -m paddle.distributed.launch ${distributed_args}  --log_dir log \
+~/paddle_release_home/python/bin/python -m paddle.distributed.launch ${distributed_args}  --log_dir log \
        ./train_with_fleet.py \
        --model=${MODEL} \
        --batch_size=${BATCH_SIZE} \
